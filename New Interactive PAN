@@ -1,6 +1,33 @@
 In order for this to work, you will need the FERs defined in this repo as well as the views created in this Repo.
 
+View=D_PAN_Apps_IP_Threats 
+_sourceCategory=*IDS* type=THREAT | count as count by _sourcecategory, app,src_ip, dest_ip, severity
 
+View=ID_PAN_HighSeverity_Threats
+_sourceCategory=*IDS* type=THREAT !severity="informational" and !severity="low" | timeslice 5m | count as count by _timeslice, _sourceCategory, threatid, src_ip, dest_ip, severity, severity_no
+
+View=ID_PAN_Threat_Cat_Subtypes
+_sourceCategory=*IDS* type=THREAT | timeslice 5m | count as count by _timeslice, _sourceCategory, cat, subtype, protocol,severity, severity_no
+
+View=ID_PAN_ThreatIDs
+_sourceCategory=*IDS* type=THREAT | timeslice 5m | count as count by _timeslice, _sourceCategory, threatid
+
+View=ID_PAN_Traffic_App_Action
+_sourceCategory=*IDS* type=TRAFFIC | count by _sourcecategory,action,app
+
+View=ID_PAN_Traffic_App_Bytes
+_sourceCategory=*IDS* type=TRAFFIC | sum(bytes_sent) as bytes_sent, sum(bytes_recv) as bytes_recv by _sourceCategory, app
+
+View=ID_PAN_Traffic_DestIP_Bytes
+_sourceCategory=*IDS* type=TRAFFIC | count as count, sum(bytes) as bytes by _sourcecategory,dest_ip
+
+View=ID_PAN_Traffic_SrcIP_Bytes
+_sourceCategory=*IDS* type=TRAFFIC | sum(bytes) as bytes, count as count by _sourcecategory, src_ip, protocol
+
+View=ID_PAN_Traffic_VsysRule_Bytes
+_sourceCategory=*IDS* type=TRAFFIC | sum(bytes) as bytes, count as count by _sourcecategory, vsys, rulename
+
+---------- APP JSON ----- copy from here to the end-----------
 {
   "type":"Folder",
   "name":"Interactive Dashboards",
